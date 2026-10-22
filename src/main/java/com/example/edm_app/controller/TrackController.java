@@ -3,6 +3,7 @@ package com.example.edm_app.controller;
 import com.example.edm_app.dtos.TrackRenameDTO;
 import com.example.edm_app.dtos.TrackResponseDTO;
 import com.example.edm_app.service.TrackService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +40,7 @@ public class TrackController {
 
     @PutMapping("/{id}/rename")
     public TrackResponseDTO rename(@PathVariable Long id,
-                                   @RequestBody TrackRenameDTO dto) {
+                                   @Valid @RequestBody TrackRenameDTO dto) {
         String email = (String) SecurityContextHolder
                 .getContext()
                 .getAuthentication()

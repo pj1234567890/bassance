@@ -6,8 +6,10 @@ import com.example.edm_app.entity.User;
 import com.example.edm_app.jwt.JwtUtil;
 import com.example.edm_app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class UserService {
@@ -15,11 +17,16 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     public void register(RegistrationDTO dto) {
         userRepository.findByEmail(dto.getEmail())
-                .ifPresent(u -> { throw new RuntimeException("User already exists"); });
+                .ifPresent(u -> {
+                    throw new ResponseStatusException(HttpStatus.CONFLICT, "User already exists");
+                });
 
         User user = new User();
         user.setEmail(dto.getEmail());
@@ -31,13 +38,13 @@ public class UserService {
 
     public LoginResponseDTO login(LoginDTO dto) {
         User user = userRepository.findByEmail(dto.getEmail())
-                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials"));
 
         if (!encoder.matches(dto.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid credentials");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
         }
 
-        String token = JwtUtil.generateToken(user.getId(), user.getEmail(), user.getRole());
+        String token = jwtUtil.generateToken(user.getId(), user.getEmail(), user.getRole());
 
         LoginResponseDTO res = new LoginResponseDTO();
         res.setEmail(user.getEmail());

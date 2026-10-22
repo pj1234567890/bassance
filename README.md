@@ -40,25 +40,16 @@ src/main/resources/static
 
 ## Configuration
 
-The app reads DB config from environment variables (with local defaults):
+Spring Boot loads settings from a `.env` file in the project root. Copy `.env.example` to `.env`, then set `DB_USERNAME`, `DB_PASSWORD`, and `JWT_SECRET` to your values. `.env` is ignored by Git so local credentials are not committed. Start the app from the project root so it can find the file.
 
-```properties
-spring.datasource.url=${DB_URL:jdbc:postgresql://localhost:5432/edm_app}
-spring.datasource.username=${DB_USERNAME:postgres}
-spring.datasource.password=${DB_PASSWORD:postgres}
-```
-
-Create the database before running:
+The PostgreSQL role in `DB_USERNAME` must already exist. Create the database before running:
 
 ```sql
 CREATE DATABASE edm_app;
 ```
 
-On Windows PowerShell, you can set credentials like:
-
 ```powershell
-$env:DB_USERNAME="postgres"
-$env:DB_PASSWORD="your_password"
+Copy-Item .env.example .env
 ```
 
 ## Run the ML Service
@@ -115,4 +106,4 @@ Then:
 ## Notes
 
 - FFmpeg is not directly required by this codebase, but non-WAV formats may depend on your local `torchaudio` backend support.
-- JWT signing key is generated at runtime in current implementation, so tokens become invalid after backend restart.
+- Use a stable `JWT_SECRET` value across restarts if you want existing tokens to remain valid until expiry.

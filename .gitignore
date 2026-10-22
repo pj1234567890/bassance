@@ -33,6 +33,9 @@ build/
 .vscode/
 
 ### Local runtime / generated ###
+.env
+.env.*
+!.env.example
 uploads/
 codebase_summary.txt
 src/main/java/com/example/edm_app/ml_service/venv/

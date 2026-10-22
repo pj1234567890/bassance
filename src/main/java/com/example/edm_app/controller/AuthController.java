@@ -4,6 +4,7 @@ import com.example.edm_app.dtos.LoginDTO;
 import com.example.edm_app.dtos.LoginResponseDTO;
 import com.example.edm_app.dtos.RegistrationDTO;
 import com.example.edm_app.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,12 +16,12 @@ public class AuthController {
     private UserService userService;
 
     @PostMapping("/register")
-    public void register(@RequestBody RegistrationDTO dto) {
+    public void register(@Valid @RequestBody RegistrationDTO dto) {
         userService.register(dto);
     }
 
     @PostMapping("/login")
-    public LoginResponseDTO login(@RequestBody LoginDTO dto) {
+    public LoginResponseDTO login(@Valid @RequestBody LoginDTO dto) {
         return userService.login(dto);
     }
 }

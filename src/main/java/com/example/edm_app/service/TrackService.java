@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
 import java.time.LocalDateTime;
@@ -34,8 +36,12 @@ public class TrackService {
     private UserRepository userRepository;
 
     public TrackResponseDTO upload(String email, MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File is required");
+        }
+
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("user not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
         try {
             String dir = "uploads";
@@ -64,6 +70,9 @@ public class TrackService {
             );
 
             String genresJson = resp.getBody();
+            if (genresJson == null || genresJson.isBlank()) {
+                throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "ML service returned empty response");
+            }
             // --------------------------------
 
             Track t = new Track();
@@ -77,8 +86,10 @@ public class TrackService {
             Track saved = trackRepository.save(t);
             return TrackMapper.toDTO(saved);
 
+        } catch (ResponseStatusException e) {
+            throw e;
         } catch (Exception e) {
-            throw new RuntimeException("upload failed", e);
+            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Upload failed", e);
         }
     }
 
@@ -93,10 +104,10 @@ public class TrackService {
 
     public TrackResponseDTO rename(String email, Long id, TrackRenameDTO dto) {
         Track t = trackRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Track not found"));
 
         if (!t.getUser().getEmail().equals(email)) {
-            throw new RuntimeException("forbidden");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Forbidden");
         }
 
         t.setDisplayName(dto.getDisplayName());
