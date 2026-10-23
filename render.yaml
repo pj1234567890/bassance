@@ -1,0 +1,73 @@
+envVarGroups:
+  - name: edm-ml-auth
+    envVars:
+      - key: ML_SERVICE_TOKEN
+        generateValue: true
+
+services:
+  - type: web
+    name: edm-api
+    runtime: docker
+    plan: 1c-2g
+    region: singapore
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: DB_HOST
+        fromDatabase:
+          name: edm-postgres
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: edm-postgres
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: edm-postgres
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: edm-postgres
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: edm-postgres
+          property: password
+      - key: DB_POOL_SIZE
+        value: "10"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ML_SERVICE_HOSTPORT
+        fromService:
+          name: edm-ml
+          type: pserv
+          property: hostport
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: MAX_UPLOAD_BYTES
+        value: "52428800"
+      - fromGroup: edm-ml-auth
+
+  - type: pserv
+    name: edm-ml
+    runtime: docker
+    plan: 2c-4g
+    region: singapore
+    dockerfilePath: ./src/main/java/com/example/edm_app/ml_service/Dockerfile
+    dockerContext: ./src/main/java/com/example/edm_app/ml_service
+    envVars:
+      - key: MAX_UPLOAD_BYTES
+        value: "52428800"
+      - key: PORT
+        value: "8001"
+      - fromGroup: edm-ml-auth
+
+databases:
+  - name: edm-postgres
+    databaseName: edm_app
+    plan: 0.5c-1g
+    region: singapore
+    postgresMajorVersion: "17"
+    diskSizeGB: 15
+    ipAllowList: []

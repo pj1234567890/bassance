@@ -1,6 +1,4 @@
-fastapi
-uvicorn
-torch
-torchvision
-torchaudio
-numpy
+fastapi==0.128.0
+uvicorn==0.40.0
+python-multipart==0.0.21
+numpy==2.4.1

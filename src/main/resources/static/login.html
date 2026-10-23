@@ -12,35 +12,12 @@
     <div class="error" id="err"></div>
     <input type="email" id="email" placeholder="Email">
     <input type="password" id="password" placeholder="Password">
-    <button onclick="login()">Login</button>
+    <button id="loginButton">Login</button>
     <div class="link">
         New here? <a href="register.html">Register</a>
     </div>
 </div>
 
-<script>
-    async function login() {
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
-        const err = document.getElementById("err");
-
-        err.textContent = "";
-
-        const res = await fetch("/auth/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password })
-        });
-
-        if (!res.ok) {
-            err.textContent = "Invalid credentials";
-            return;
-        }
-
-        const data = await res.json();
-        localStorage.setItem("token", data.token);
-        window.location.href = "dashboard.html";
-    }
-</script>
+<script src="/js/login.js" defer></script>
 </body>
 </html>

@@ -10,15 +10,15 @@
 
 <header>
     <div>🎵 EDM Classifier</div>
-    <button onclick="logout()">Logout</button>
+    <button id="logoutButton">Logout</button>
 </header>
 
 <main>
 
     <div class="card">
         <h2>Upload Track</h2>
-        <input type="file" id="file">
-        <button onclick="upload()">Upload & Analyze</button>
+        <input type="file" id="file" accept=".mp3,.wav,.flac,.ogg,.m4a,audio/*">
+        <button id="uploadButton">Upload & Analyze</button>
         <div id="uploadStatus" class="small"></div>
     </div>
 
@@ -38,100 +38,7 @@
 
 </main>
 
-<script>
-    const token = localStorage.getItem("token");
-    if (!token) {
-        window.location.href = "login.html";
-    }
-
-    function logout() {
-        localStorage.removeItem("token");
-        window.location.href = "login.html";
-    }
-
-    async function upload() {
-        const fileInput = document.getElementById("file");
-        const status = document.getElementById("uploadStatus");
-
-        if (!fileInput.files.length) {
-            status.textContent = "Select a file first.";
-            return;
-        }
-
-        const form = new FormData();
-        form.append("file", fileInput.files[0]);
-
-        status.textContent = "Uploading & analyzing...";
-
-        const res = await fetch("/tracks/upload", {
-            method: "POST",
-            headers: {
-                "Authorization": "Bearer " + token
-            },
-            body: form
-        });
-
-        if (!res.ok) {
-            status.textContent = "Upload failed.";
-            return;
-        }
-
-        status.textContent = "Done.";
-        fileInput.value = "";
-        loadTracks();
-    }
-
-    async function loadTracks() {
-        const res = await fetch("/tracks", {
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        });
-
-        if (!res.ok) {
-            return;
-        }
-
-        const tracks = await res.json();
-        const body = document.getElementById("tracksBody");
-        body.innerHTML = "";
-
-        for (const t of tracks) {
-            const tr = document.createElement("tr");
-
-            const nameTd = document.createElement("td");
-            const nameInput = document.createElement("input");
-            nameInput.value = t.displayName;
-            nameInput.onchange = () => rename(t.id, nameInput.value);
-            nameTd.appendChild(nameInput);
-
-            const genreTd = document.createElement("td");
-            genreTd.className = "genre";
-            genreTd.textContent = t.genresJson;
-
-            const timeTd = document.createElement("td");
-            timeTd.textContent = t.createdAt;
-
-            tr.appendChild(nameTd);
-            tr.appendChild(genreTd);
-            tr.appendChild(timeTd);
-            body.appendChild(tr);
-        }
-    }
-
-    async function rename(id, name) {
-        await fetch(`/tracks/${id}/rename`, {
-            method: "PUT",
-            headers: {
-                "Authorization": "Bearer " + token,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ displayName: name })
-        });
-    }
-
-    loadTracks();
-</script>
+<script src="/js/dashboard.js" defer></script>
 
 </body>
 </html>

@@ -1,0 +1,12 @@
+.git
+.idea
+.env
+.env.*
+!.env.example
+target
+uploads
+app.err
+app.log
+project_dump.md
+**/venv
+**/__pycache__
