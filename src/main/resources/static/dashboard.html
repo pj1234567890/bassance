@@ -2,43 +2,59 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard | EDM Classifier</title>
+    <title>Your listening room | Bassance</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#090b0d">
+    <meta name="description" content="Explore the sound and shape of your music with Bassance.">
     <link rel="stylesheet" href="/css/app.css">
 </head>
 <body class="dashboard-page">
-
 <header>
-    <div>🎵 EDM Classifier</div>
-    <button id="logoutButton">Logout</button>
+    <a class="brand" href="dashboard.html"><span class="brand-mark">B</span><span>BASSANCE</span></a>
+    <button id="logoutButton" type="button">Sign out</button>
 </header>
 
 <main>
+    <section class="dashboard-heading">
+        <div>
+            <div class="eyebrow">Your personal sound lab</div>
+            <h1>Hear it.<br>Know it.</h1>
+            <p>Drop a track into the lab and uncover the genres hiding inside.</p>
+        </div>
+        <span class="live-pill">Analysis ready</span>
+    </section>
 
-    <div class="card">
-        <h2>Upload Track</h2>
-        <input type="file" id="file" accept=".mp3,.wav,.flac,.ogg,.m4a,audio/*">
-        <button id="uploadButton">Upload & Analyze</button>
-        <div id="uploadStatus" class="small"></div>
-    </div>
+    <section class="card upload-card" aria-labelledby="uploadTitle">
+        <div class="upload-copy">
+            <div class="eyebrow">01 / New analysis</div>
+            <h2 id="uploadTitle">Bring a track to life</h2>
+            <p>MP3, WAV, FLAC, OGG or M4A · up to 50 MB</p>
+            <div id="uploadStatus" class="small" role="status" aria-live="polite"></div>
+        </div>
+        <div class="upload-controls">
+            <input type="file" id="file" aria-label="Choose an audio file" accept=".mp3,.wav,.flac,.ogg,.m4a,audio/*">
+            <button id="uploadButton" type="button">Analyze track <span aria-hidden="true">↗</span></button>
+        </div>
+    </section>
 
-    <div class="card">
-        <h2>Recent Tracks</h2>
-        <table>
-            <thead>
-            <tr>
-                <th>Name</th>
-                <th>Genres</th>
-                <th>Uploaded</th>
-            </tr>
-            </thead>
-            <tbody id="tracksBody"></tbody>
-        </table>
-    </div>
-
+    <section class="card" aria-labelledby="tracksTitle">
+        <div class="tracks-heading">
+            <div>
+                <div class="eyebrow">02 / Your collection</div>
+                <h2 id="tracksTitle">Recent analyses</h2>
+                <p>Your results, ready whenever you are.</p>
+            </div>
+            <span class="track-count">SAVED TO YOUR LIBRARY</span>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Track name</th><th>Detected genres</th><th>Added</th></tr></thead>
+                <tbody id="tracksBody"></tbody>
+            </table>
+        </div>
+    </section>
 </main>
 
 <script src="/js/dashboard.js" defer></script>
-
 </body>
 </html>

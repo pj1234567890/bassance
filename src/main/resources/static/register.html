@@ -2,23 +2,35 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Register | EDM Classifier</title>
+    <title>Create account | Bassance</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#090b0d">
+    <meta name="description" content="Create your Bassance account and start exploring your music.">
     <link rel="stylesheet" href="/css/app.css">
 </head>
 <body class="auth-page">
-<div class="card">
-    <h2>Register</h2>
-    <div class="error" id="err"></div>
-    <input type="text" id="name" placeholder="Name" maxlength="100">
-    <input type="email" id="email" placeholder="Email">
-    <input type="password" id="password" placeholder="Password" minlength="12" maxlength="72" autocomplete="new-password">
-    <button id="registerButton">Create Account</button>
-    <div class="link">
-        Already have an account? <a href="login.html">Login</a>
+<aside class="auth-story">
+    <a class="brand" href="/login.html"><span class="brand-mark">B</span><span>BASSANCE</span></a>
+    <div class="auth-story-copy">
+        <div class="eyebrow">A new way to listen</div>
+        <h1>Find the<br>feeling in<br><em>the sound.</em></h1>
+        <p>Your music has a shape. Bring a track in and let Bassance reveal the genres and textures that make it yours.</p>
     </div>
-</div>
-
+    <div class="auth-story-foot">Made for the music you love · Est. 2025</div>
+</aside>
+<main class="auth-panel">
+    <section class="card" aria-labelledby="authTitle">
+        <div class="eyebrow">Start your listening room</div>
+        <h2 id="authTitle">Make it yours.</h2>
+        <p class="auth-intro">One account. A whole new way to hear your music.</p>
+        <div class="error" id="err" role="alert" aria-live="polite"></div>
+        <label class="field"><span>Your name</span><input type="text" id="name" placeholder="What should we call you?" maxlength="100" autocomplete="name" required></label>
+        <label class="field"><span>Email address</span><input type="email" id="email" placeholder="you@example.com" autocomplete="email" required></label>
+        <label class="field"><span>Password</span><input type="password" id="password" placeholder="At least 12 characters" minlength="12" maxlength="72" autocomplete="new-password" required></label>
+        <button id="registerButton" type="button">Create your account <span aria-hidden="true">↗</span></button>
+        <div class="link">Already have an account? <a href="login.html">Sign in</a></div>
+    </section>
+</main>
 <script src="/js/register.js" defer></script>
 </body>
 </html>

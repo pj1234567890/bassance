@@ -3,10 +3,12 @@
 .env
 .env.*
 !.env.example
-target
+**/target
 uploads
+**/venv
+**/__pycache__
+**/*.pyc
+src/main/java/com/example/edm_app/ml_service/spec_cnn_v1.pt
 app.err
 app.log
 project_dump.md
-**/venv
-**/__pycache__

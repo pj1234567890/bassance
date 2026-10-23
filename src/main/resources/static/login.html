@@ -2,22 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login | EDM Classifier</title>
+    <title>Sign in | Bassance</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#090b0d">
+    <meta name="description" content="Sign in to your Bassance sound lab.">
     <link rel="stylesheet" href="/css/app.css">
 </head>
 <body class="auth-page">
-<div class="card">
-    <h2>Login</h2>
-    <div class="error" id="err"></div>
-    <input type="email" id="email" placeholder="Email">
-    <input type="password" id="password" placeholder="Password">
-    <button id="loginButton">Login</button>
-    <div class="link">
-        New here? <a href="register.html">Register</a>
+<aside class="auth-story">
+    <a class="brand" href="/login.html"><span class="brand-mark">B</span><span>BASSANCE</span></a>
+    <div class="auth-story-copy">
+        <div class="eyebrow">A new way to listen</div>
+        <h1>Find the<br>feeling in<br><em>the sound.</em></h1>
+        <p>Your music has a shape. Bring a track in and let Bassance reveal the genres and textures that make it yours.</p>
     </div>
-</div>
-
+    <div class="auth-story-foot">Made for the music you love · Est. 2025</div>
+</aside>
+<main class="auth-panel">
+    <section class="card" aria-labelledby="authTitle">
+        <div class="eyebrow">Welcome back</div>
+        <h2 id="authTitle">Good to have you here.</h2>
+        <p class="auth-intro">Sign in to get back to your listening room.</p>
+        <div class="error" id="err" role="alert" aria-live="polite"></div>
+        <label class="field"><span>Email address</span><input type="email" id="email" placeholder="you@example.com" autocomplete="email" required></label>
+        <label class="field"><span>Password</span><input type="password" id="password" placeholder="Your password" autocomplete="current-password" required></label>
+        <button id="loginButton" type="button">Sign in <span aria-hidden="true">↗</span></button>
+        <div class="link">New to Bassance? <a href="register.html">Create an account</a></div>
+    </section>
+</main>
 <script src="/js/login.js" defer></script>
 </body>
 </html>

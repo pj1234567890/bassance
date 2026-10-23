@@ -38,6 +38,9 @@ build/
 !.env.example
 uploads/
 codebase_summary.txt
+app.err
+app.log
+project_dump.md
 src/main/java/com/example/edm_app/ml_service/venv/
 src/main/java/com/example/edm_app/ml_service/__pycache__/
 **/__pycache__/

@@ -43,6 +43,9 @@ async function upload() {
 
     const form = new FormData();
     form.append("file", file);
+    const uploadButton = document.getElementById("uploadButton");
+    uploadButton.disabled = true;
+    uploadButton.textContent = "Reading the sound…";
     status.textContent = "Uploading and analyzing...";
 
     try {
@@ -57,8 +60,10 @@ async function upload() {
                 : response.status === 413
                     ? "The audio file must be 50 MB or smaller."
                     : response.status === 415
-                        ? "Choose a valid MP3, WAV, FLAC, OGG, or M4A file."
-                        : "Upload or analysis failed. Please try again.";
+                    ? "Choose a valid MP3, WAV, FLAC, OGG, or M4A file."
+                    : "Upload or analysis failed. Please try again.";
+            uploadButton.disabled = false;
+            uploadButton.innerHTML = 'Analyze track <span aria-hidden="true">↗</span>';
             return;
         }
         status.textContent = "Analysis complete.";
@@ -66,6 +71,9 @@ async function upload() {
         await loadTracks();
     } catch {
         status.textContent = "The audio service is temporarily unavailable.";
+    } finally {
+        uploadButton.disabled = false;
+        uploadButton.innerHTML = 'Analyze track <span aria-hidden="true">↗</span>';
     }
 }
 
@@ -76,6 +84,17 @@ async function loadTracks(response) {
     const tracks = await result.json();
     const body = document.getElementById("tracksBody");
     body.replaceChildren();
+
+    if (!tracks.length) {
+        const row = document.createElement("tr");
+        const cell = document.createElement("td");
+        cell.colSpan = 3;
+        cell.className = "empty-state";
+        cell.textContent = "Your first track is waiting. Upload something above to start your collection.";
+        row.appendChild(cell);
+        body.appendChild(row);
+        return;
+    }
 
     for (const track of tracks) {
         const row = document.createElement("tr");
