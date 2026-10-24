@@ -1,13 +1,36 @@
-let csrfToken;
-
 document.getElementById("logoutButton").addEventListener("click", logout);
 document.getElementById("uploadButton").addEventListener("click", upload);
+
+function readCookie(name) {
+    const prefix = `${name}=`;
+    const cookie = document.cookie
+        .split(";")
+        .map(value => value.trim())
+        .find(value => value.startsWith(prefix));
+    return cookie ? decodeURIComponent(cookie.slice(prefix.length)) : null;
+}
+
+async function currentCsrfToken() {
+    let token = readCookie("XSRF-TOKEN");
+    if (token) return token;
+
+    const response = await fetch("/auth/csrf", {
+        credentials: "same-origin",
+        cache: "no-store"
+    });
+    if (!response.ok) throw new Error("Could not initialize request security");
+
+    await response.json();
+    token = readCookie("XSRF-TOKEN");
+    if (!token) throw new Error("CSRF token is unavailable");
+    return token;
+}
 
 async function initialize() {
     try {
         const csrfResponse = await fetch("/auth/csrf");
         if (!csrfResponse.ok) throw new Error("Could not initialize dashboard");
-        csrfToken = (await csrfResponse.json()).token;
+        await csrfResponse.json();
         const response = await fetch("/tracks");
         if (response.status === 401 || response.status === 403) {
             window.location.href = "login.html";
@@ -20,9 +43,11 @@ async function initialize() {
 }
 
 async function logout() {
+    const token = await currentCsrfToken();
     await fetch("/auth/logout", {
         method: "POST",
-        headers: { "X-XSRF-TOKEN": csrfToken }
+        credentials: "same-origin",
+        headers: { "X-XSRF-TOKEN": token }
     });
     window.location.href = "login.html";
 }
@@ -49,9 +74,11 @@ async function upload() {
     status.textContent = "Uploading and analyzing...";
 
     try {
+        const token = await currentCsrfToken();
         const response = await fetch("/tracks/upload", {
             method: "POST",
-            headers: { "X-XSRF-TOKEN": csrfToken },
+            credentials: "same-origin",
+            headers: { "X-XSRF-TOKEN": token },
             body: form
         });
         if (!response.ok) {
@@ -117,10 +144,12 @@ async function loadTracks(response) {
 }
 
 async function rename(id, displayName) {
+    const token = await currentCsrfToken();
     await fetch(`/tracks/${encodeURIComponent(id)}/rename`, {
         method: "PUT",
+        credentials: "same-origin",
         headers: {
-            "X-XSRF-TOKEN": csrfToken,
+            "X-XSRF-TOKEN": token,
             "Content-Type": "application/json"
         },
         body: JSON.stringify({ displayName })
